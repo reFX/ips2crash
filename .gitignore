@@ -4,3 +4,6 @@
 **/*.xcodeproj/xcuserdata/
 **/project.xcworkspace/xcuserdata/
 **/*.xccheckout
+tool_ips2crash/ips2crash.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+tool_ips2crash/build
