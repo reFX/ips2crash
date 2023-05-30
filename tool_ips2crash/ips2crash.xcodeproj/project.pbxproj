@@ -531,6 +531,7 @@
 			baseConfigurationReference = F43B88C5271F44F10052D655 /* SharedConfigurationSettings.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -540,6 +541,7 @@
 			baseConfigurationReference = F43B88C5271F44F10052D655 /* SharedConfigurationSettings.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
