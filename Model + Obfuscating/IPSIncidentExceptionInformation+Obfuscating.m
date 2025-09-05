@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Stephane Sudre
+ Copyright (c) 2022-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -14,10 +14,14 @@
 #import "IPSIncidentExceptionInformation+Obfuscating.h"
 
 #import "IPSLegacyInfo+Obfuscating.h"
+#import "IPSThreadFrame+Obfuscating.h"
+
+#import "NSArray+WBExtensions.h"
 
 @interface IPSIncidentExceptionInformation ()
 
 - (void)setLegacyInfo:(IPSLegacyInfo *)inLegacyInfo;
+- (void)setLastExceptionBacktrace:(NSArray <IPSThreadFrame *> *)frames;
 
 @end
 
@@ -25,14 +29,17 @@
 
 - (id)obfuscateWithObfuscator:(IPSObfuscator *)inObfuscator
 {
-    IPSIncidentExceptionInformation * nIncidentExceptionInformation=[self copy];
-    
-    if (nIncidentExceptionInformation!=nil)
-    {
-        nIncidentExceptionInformation.legacyInfo=[self.legacyInfo obfuscateWithObfuscator:inObfuscator];
-    }
-    
-    return nIncidentExceptionInformation;
+	IPSIncidentExceptionInformation * nIncidentExceptionInformation=[self copy];
+	
+	nIncidentExceptionInformation.legacyInfo=[self.legacyInfo obfuscateWithObfuscator:inObfuscator];
+	
+	nIncidentExceptionInformation.lastExceptionBacktrace=[self.lastExceptionBacktrace WB_arrayByMappingObjectsUsingBlock:^IPSThreadFrame *(IPSThreadFrame * bThreadFrame, NSUInteger bIndex) {
+		
+		return [bThreadFrame obfuscateWithObfuscator:inObfuscator];
+		
+	}];
+	
+	return nIncidentExceptionInformation;
 }
 
 @end

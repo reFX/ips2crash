@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,77 +19,77 @@ NSString * const IPSIncidentDiagnosticMessageVmregioninfoKey=@"vmregioninfo";
 
 @interface IPSIncidentDiagnosticMessage ()
 
-    @property (readwrite) IPSApplicationSpecificInformation * asi;
+	@property (nullable,readwrite) IPSApplicationSpecificInformation * asi;
 
-    @property (readwrite,copy) NSString *vmregioninfo;
+	@property (nullable,readwrite,copy) NSString *vmregioninfo;
 
 @end
 
 @implementation IPSIncidentDiagnosticMessage
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSDictionary * tDictionary=inRepresentation[IPSIncidentDiagnosticMessageAsiKey];
-        
-        if (tDictionary!=nil)
-        {
-            _asi=[[IPSApplicationSpecificInformation alloc] initWithRepresentation:inRepresentation error:NULL];
-        }
-        
-        NSString * tString=inRepresentation[IPSIncidentDiagnosticMessageVmregioninfoKey];
-        
-        if (tString!=nil)
-        {
-            IPSClassCheckStringValueForKey(tString,IPSIncidentDiagnosticMessageVmregioninfoKey);
-            
-            _vmregioninfo=[tString copy];
-        }
-    }
-    
-    return self;
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+		
+		return nil;
+	}
+	
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+		
+		return nil;
+	}
+	
+	self=[super init];
+	
+	if (self!=nil)
+	{
+		NSDictionary * tDictionary=inRepresentation[IPSIncidentDiagnosticMessageAsiKey];
+		
+		if (tDictionary!=nil)
+		{
+			_asi=[[IPSApplicationSpecificInformation alloc] initWithRepresentation:inRepresentation error:NULL];
+		}
+		
+		NSString * tString=inRepresentation[IPSIncidentDiagnosticMessageVmregioninfoKey];
+		
+		if (tString!=nil)
+		{
+			IPSClassCheckStringValueForKey(tString,IPSIncidentDiagnosticMessageVmregioninfoKey);
+			
+			_vmregioninfo=[tString copy];
+		}
+	}
+	
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    return @{};
+	return @{};
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    IPSIncidentDiagnosticMessage * nIncidentDiagnosticMessage=[IPSIncidentDiagnosticMessage allocWithZone:inZone];
-    
-    if (nIncidentDiagnosticMessage!=nil)
-    {
-        nIncidentDiagnosticMessage->_asi=[self.asi copyWithZone:inZone];
-        
-        nIncidentDiagnosticMessage->_vmregioninfo=[self.vmregioninfo copyWithZone:inZone];
-    }
-    
-    return nIncidentDiagnosticMessage;
+	IPSIncidentDiagnosticMessage * nIncidentDiagnosticMessage=[IPSIncidentDiagnosticMessage allocWithZone:inZone];
+	
+	if (nIncidentDiagnosticMessage!=nil)
+	{
+		nIncidentDiagnosticMessage->_asi=[self.asi copyWithZone:inZone];
+		
+		nIncidentDiagnosticMessage->_vmregioninfo=[self.vmregioninfo copyWithZone:inZone];
+	}
+	
+	return nIncidentDiagnosticMessage;
 }
 
 @end

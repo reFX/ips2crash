@@ -17,7 +17,9 @@
 
 @interface IPSLegacyInfo (Private)
 
-- (void)setThreadTriggered:(IPSThread *)iThreadTriggered;
+- (void)setThreadTriggered:(IPSThread *)inThreadTriggered;
+
+- (void)setThreadHighlighted:(NSUInteger)iThreadHighlighted;
 
 @end
 
@@ -25,14 +27,13 @@
 
 - (id)obfuscateWithObfuscator:(IPSObfuscator *)inObfuscator
 {
-    IPSLegacyInfo * nObfuscatedLegacyInfo=[IPSLegacyInfo alloc];
-    
-    if (nObfuscatedLegacyInfo!=nil)
-    {
-        nObfuscatedLegacyInfo.threadTriggered=[self.threadTriggered obfuscateWithObfuscator:inObfuscator];
-    }
-    
-    return nObfuscatedLegacyInfo;
+	IPSLegacyInfo * nObfuscatedLegacyInfo=[IPSLegacyInfo new];
+	
+	nObfuscatedLegacyInfo.threadTriggered=[self.threadTriggered obfuscateWithObfuscator:inObfuscator];
+	
+	nObfuscatedLegacyInfo.threadHighlighted=self.threadHighlighted;
+	
+	return nObfuscatedLegacyInfo;
 }
 
 @end

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,14 +17,16 @@
 
 // osfmk/mach/vm_statistics.h
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface IPSExternalModificationStatistics : NSObject <IPSObjectProtocol,NSCopying>
 
-    @property (readonly) NSInteger taskForPid;     // Number of times task port was looked up
+	@property (readonly) NSInteger taskForPid;	 // Number of times task port was looked up
 
-    @property (readonly) NSInteger threadCreate;   // Number of threads created in task
+	@property (readonly) NSInteger threadCreate;   // Number of threads created in task
 
-    @property (readonly) NSInteger threadSetState; // Number of register state sets by task
+	@property (readonly) NSInteger threadSetState; // Number of register state sets by task
 
 @end
 
-
+NS_ASSUME_NONNULL_END

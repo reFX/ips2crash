@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,121 +25,126 @@ NSString * const IPSExceptionRawCodesKey=@"rawCodes";
 
 @interface IPSException ()
 
-    @property (readwrite,copy) NSString * type;
+	@property (readwrite,copy) NSString * type;
 
-    @property (readwrite,copy) NSString * subtype;
+	@property (nullable,readwrite,copy) NSString * subtype;
 
-    @property (readwrite,copy) NSString * signal;
+	@property (nullable,readwrite,copy) NSString * signal;
 
-    @property (readwrite,copy) NSString * codes;
+	@property (readwrite,copy) NSString * codes;
 
-    @property (readwrite) NSArray<NSNumber *> * rawCodes;
+	@property (nullable,readwrite) NSArray<NSNumber *> * rawCodes;
 
 @end
 
 @implementation IPSException
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSString * tString=inRepresentation[IPSExceptionTypeKey];
-        
-        IPSFullCheckStringValueForKey(tString,IPSExceptionTypeKey);
-        
-        _type=[tString copy];
-        
-        tString=inRepresentation[IPSExceptionSubtypeKey];
-        
-        if (tString!=nil)
-        {
-            IPSClassCheckStringValueForKey(tString,IPSExceptionSubtypeKey);
-        
-            _subtype=[tString copy];
-        }
-        
-        tString=inRepresentation[IPSExceptionSignalKey];
-        
-        IPSFullCheckStringValueForKey(tString,IPSExceptionSignalKey);
-        
-        _signal=[tString copy];
-        
-        tString=inRepresentation[IPSExceptionCodesKey];
-        
-        IPSFullCheckStringValueForKey(tString,IPSExceptionCodesKey);
-        
-        _codes=[tString copy];
-        
-        NSArray * tArray=inRepresentation[IPSExceptionRawCodesKey];
-        
-        if (tArray!=nil)
-        {
-            IPSClassCheckArrayValueForKey(tArray,IPSExceptionRawCodesKey);
-        
-            _rawCodes=[tArray copy];
-        }
-    }
-    
-    return self;
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+		
+		return nil;
+	}
+	
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+		
+		return nil;
+	}
+	
+	self=[super init];
+	
+	if (self!=nil)
+	{
+		NSString * tString=inRepresentation[IPSExceptionTypeKey];
+		
+		IPSFullCheckStringValueForKey(tString,IPSExceptionTypeKey);
+		
+		_type=[tString copy];
+		
+		tString=inRepresentation[IPSExceptionSubtypeKey];
+		
+		if (tString!=nil)
+		{
+			IPSClassCheckStringValueForKey(tString,IPSExceptionSubtypeKey);
+		
+			_subtype=[tString copy];
+		}
+		
+		tString=inRepresentation[IPSExceptionSignalKey];
+		
+		if (tString!=nil)
+		{
+			IPSFullCheckStringValueForKey(tString,IPSExceptionSignalKey);
+		
+			_signal=[tString copy];
+		}
+		
+		tString=inRepresentation[IPSExceptionCodesKey];
+		
+		IPSFullCheckStringValueForKey(tString,IPSExceptionCodesKey);
+		
+		_codes=[tString copy];
+		
+		NSArray * tArray=inRepresentation[IPSExceptionRawCodesKey];
+		
+		if (tArray!=nil)
+		{
+			IPSClassCheckArrayValueForKey(tArray,IPSExceptionRawCodesKey);
+		
+			_rawCodes=[tArray copy];
+		}
+	}
+	
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    NSMutableDictionary * tMutableDictionary=[NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                             IPSExceptionTypeKey:self.type,
-                                                                                             IPSExceptionSignalKey:self.signal,
-                                                                                             IPSExceptionCodesKey:self.codes,
-                                                                                             }];
-    
-    if (self.subtype!=nil)
-        tMutableDictionary[IPSExceptionSubtypeKey]=self.subtype;
-    
-    if (self.rawCodes!=nil)
-        tMutableDictionary[IPSExceptionRawCodesKey]=self.rawCodes;
-    
-    return [tMutableDictionary copy];
+	NSMutableDictionary * tMutableDictionary=[NSMutableDictionary dictionaryWithDictionary:@{
+																							 IPSExceptionTypeKey:self.type,
+																							 IPSExceptionCodesKey:self.codes,
+																							 }];
+	
+	if (self.signal!=nil)
+		tMutableDictionary[IPSExceptionSignalKey]=self.signal;
+	
+	if (self.subtype!=nil)
+		tMutableDictionary[IPSExceptionSubtypeKey]=self.subtype;
+	
+	if (self.rawCodes!=nil)
+		tMutableDictionary[IPSExceptionRawCodesKey]=self.rawCodes;
+	
+	return [tMutableDictionary copy];
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    IPSException * nException=[IPSException allocWithZone:inZone];
-    
-    if (nException!=nil)
-    {
-        nException->_type=[self.type copyWithZone:inZone];
-        
-        nException->_subtype=[self.subtype copyWithZone:inZone];
-        
-        nException->_signal=[self.signal copyWithZone:inZone];
-        
-        nException->_codes=[self.codes copyWithZone:inZone];
-        
-        nException->_rawCodes=[self.rawCodes copyWithZone:inZone];
-    }
-    
-    return nException;
+	IPSException * nException=[IPSException allocWithZone:inZone];
+	
+	if (nException!=nil)
+	{
+		nException->_type=[self.type copyWithZone:inZone];
+		
+		nException->_subtype=[self.subtype copyWithZone:inZone];
+		
+		nException->_signal=[self.signal copyWithZone:inZone];
+		
+		nException->_codes=[self.codes copyWithZone:inZone];
+		
+		nException->_rawCodes=[self.rawCodes copyWithZone:inZone];
+	}
+	
+	return nException;
 }
 
 @end

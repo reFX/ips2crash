@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -15,12 +15,16 @@
 
 #import "IPSObjectProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface IPSThreadInstructionStream : NSObject <IPSObjectProtocol,NSCopying>
 
-    @property (readonly) uint8_t * bytes;
+	@property (readonly) uint8_t * bytes;
 
-    @property (readonly) NSUInteger bytesCount;
+	@property (readonly) NSUInteger bytesCount;
 
-    @property (readonly) NSUInteger offset;
+	@property (readonly) NSUInteger offset;
 
 @end
+
+NS_ASSUME_NONNULL_END

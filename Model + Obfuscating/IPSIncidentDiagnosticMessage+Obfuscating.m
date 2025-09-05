@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Stephane Sudre
+ Copyright (c) 2022-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,16 +26,13 @@
 
 - (id)obfuscateWithObfuscator:(IPSObfuscator *)inObfuscator
 {
-    IPSIncidentDiagnosticMessage * nIncidentDiagnosticMessage=[IPSIncidentDiagnosticMessage alloc];
-    
-    if (nIncidentDiagnosticMessage!=nil)
-    {
-        nIncidentDiagnosticMessage.asi=[self.asi obfuscateWithObfuscator:inObfuscator];
-        
-        nIncidentDiagnosticMessage.vmregioninfo=[self.vmregioninfo copy];
-    }
-    
-    return nIncidentDiagnosticMessage;
+	IPSIncidentDiagnosticMessage * nIncidentDiagnosticMessage=[IPSIncidentDiagnosticMessage new];
+	
+	nIncidentDiagnosticMessage.asi=[self.asi obfuscateWithObfuscator:inObfuscator];
+	
+	nIncidentDiagnosticMessage.vmregioninfo=[self.vmregioninfo copy];
+	
+	return nIncidentDiagnosticMessage;
 }
 
 @end

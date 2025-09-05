@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -16,24 +16,26 @@
 
 #import "IPSError.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define IPSFullCheckObjectValueForKey(class,object,key) if ((object)==nil)\
 {\
-    if (outError!=NULL)\
-        *outError=[NSError errorWithDomain:IPSErrorDomain\
-                                      code:IPSRepresentationInvalidValueError\
-                                  userInfo:@{IPSKeyPathErrorKey:(key)}];\
+	if (outError!=NULL)\
+		*outError=[NSError errorWithDomain:IPSErrorDomain\
+									  code:IPSRepresentationInvalidValueError\
+								  userInfo:@{IPSKeyPathErrorKey:(key)}];\
 \
-    return nil;\
+	return nil;\
 }\
 \
 if ([(object) isKindOfClass:class]==NO)\
 {\
-    if (outError!=NULL)\
-        *outError=[NSError errorWithDomain:IPSErrorDomain\
-                                      code:IPSRepresentationInvalidTypeOfValueError\
-                                  userInfo:@{IPSKeyPathErrorKey:(key)}];\
+	if (outError!=NULL)\
+		*outError=[NSError errorWithDomain:IPSErrorDomain\
+									  code:IPSRepresentationInvalidTypeOfValueError\
+								  userInfo:@{IPSKeyPathErrorKey:(key)}];\
 \
-    return nil;\
+	return nil;\
 }\
 
 
@@ -45,12 +47,12 @@ if ([(object) isKindOfClass:class]==NO)\
 
 #define IPSClassCheckObjectValueForKey(class,object,key) if ((object)!=nil && [(object) isKindOfClass:class]==NO)\
 {\
-    if (outError!=NULL)\
-        *outError=[NSError errorWithDomain:IPSErrorDomain\
-                                      code:IPSRepresentationInvalidTypeOfValueError\
-                                  userInfo:@{IPSKeyPathErrorKey:(key)}];\
+	if (outError!=NULL)\
+		*outError=[NSError errorWithDomain:IPSErrorDomain\
+									  code:IPSRepresentationInvalidTypeOfValueError\
+								  userInfo:@{IPSKeyPathErrorKey:(key)}];\
 \
-    return nil;\
+	return nil;\
 }\
 
 #define IPSClassCheckStringValueForKey(string,key) IPSClassCheckObjectValueForKey(NSString.class,string,key)
@@ -60,8 +62,10 @@ if ([(object) isKindOfClass:class]==NO)\
 
 @protocol IPSObjectProtocol <NSObject>
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError;
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError;
 
 - (NSDictionary *)representation;
 
 @end
+
+NS_ASSUME_NONNULL_END

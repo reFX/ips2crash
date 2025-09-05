@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -15,16 +15,20 @@
 
 #import "IPSObjectProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface IPSException : NSObject <IPSObjectProtocol,NSCopying>
 
-    @property (readonly,copy) NSString * type;
+	@property (readonly,copy) NSString * type;
 
-    @property (readonly,copy) NSString * subtype;
+	@property (nullable,readonly,copy) NSString * subtype;
 
-    @property (readonly,copy) NSString * signal;
+	@property (nullable,readonly,copy) NSString * signal;
 
-    @property (readonly,copy) NSString * codes;
+	@property (readonly,copy) NSString * codes;
 
-    @property (readonly) NSArray<NSNumber *> * rawCodes;
+	@property (nullable,readonly) NSArray<NSNumber *> * rawCodes;
 
 @end
+
+NS_ASSUME_NONNULL_END

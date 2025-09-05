@@ -17,6 +17,8 @@
 
 #import "IPSRegisterState.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString * const IPSThreadStateCpuKey;
 
 extern NSString * const IPSThreadStateErrKey;
@@ -25,8 +27,10 @@ extern NSString * const IPSThreadStateTrapKey;
 
 @interface IPSThreadState : NSObject <IPSObjectProtocol,NSCopying>
 
-    @property (readonly,copy) NSString * flavor;
+	@property (readonly,copy) NSString * flavor;
 
-    @property (readonly) NSDictionary<NSString *,IPSRegisterState *> * registersStates;
+	@property (readonly) NSDictionary<NSString *,IPSRegisterState *> * registersStates;
 
 @end
+
+NS_ASSUME_NONNULL_END

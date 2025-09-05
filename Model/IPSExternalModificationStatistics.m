@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,88 +21,88 @@ NSString * const IPSExternalModificationStatisticsThreadSetStateKey=@"threadSetS
 
 @interface IPSExternalModificationStatistics ()
 
-    @property (readwrite) NSInteger taskForPid;
+	@property (readwrite) NSInteger taskForPid;
 
-    @property (readwrite) NSInteger threadCreate;
+	@property (readwrite) NSInteger threadCreate;
 
-    @property (readwrite) NSInteger threadSetState;
+	@property (readwrite) NSInteger threadSetState;
 
 @end
 
 
 @implementation IPSExternalModificationStatistics
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSNumber * tNumber=inRepresentation[IPSExternalModificationStatisticsTaskForPidKey];
-        
-        IPSFullCheckNumberValueForKey(tNumber,IPSExternalModificationStatisticsTaskForPidKey);
-        
-        _taskForPid=[tNumber integerValue];
-        
-        tNumber=inRepresentation[IPSExternalModificationStatisticsThreadCreateKey];
-        
-        IPSFullCheckNumberValueForKey(tNumber,IPSExternalModificationStatisticsThreadCreateKey);
-        
-        _threadCreate=[tNumber integerValue];
-        
-        tNumber=inRepresentation[IPSExternalModificationStatisticsThreadSetStateKey];
-        
-        IPSFullCheckNumberValueForKey(tNumber,IPSExternalModificationStatisticsThreadSetStateKey);
-        
-        _threadSetState=[tNumber integerValue];
-    }
-    
-    return self;
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+		
+		return nil;
+	}
+	
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+		
+		return nil;
+	}
+	
+	self=[super init];
+	
+	if (self!=nil)
+	{
+		NSNumber * tNumber=inRepresentation[IPSExternalModificationStatisticsTaskForPidKey];
+		
+		IPSFullCheckNumberValueForKey(tNumber,IPSExternalModificationStatisticsTaskForPidKey);
+		
+		_taskForPid=[tNumber integerValue];
+		
+		tNumber=inRepresentation[IPSExternalModificationStatisticsThreadCreateKey];
+		
+		IPSFullCheckNumberValueForKey(tNumber,IPSExternalModificationStatisticsThreadCreateKey);
+		
+		_threadCreate=[tNumber integerValue];
+		
+		tNumber=inRepresentation[IPSExternalModificationStatisticsThreadSetStateKey];
+		
+		IPSFullCheckNumberValueForKey(tNumber,IPSExternalModificationStatisticsThreadSetStateKey);
+		
+		_threadSetState=[tNumber integerValue];
+	}
+	
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    return @{
-             IPSExternalModificationStatisticsTaskForPidKey:@(self.taskForPid),
-             IPSExternalModificationStatisticsThreadCreateKey:@(self.threadCreate),
-             IPSExternalModificationStatisticsThreadSetStateKey:@(self.threadSetState)
-             };
+	return @{
+			 IPSExternalModificationStatisticsTaskForPidKey:@(self.taskForPid),
+			 IPSExternalModificationStatisticsThreadCreateKey:@(self.threadCreate),
+			 IPSExternalModificationStatisticsThreadSetStateKey:@(self.threadSetState)
+			 };
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    IPSExternalModificationStatistics * nExternalModificationStatistics=[IPSExternalModificationStatistics allocWithZone:inZone];
-    
-    if (nExternalModificationStatistics!=nil)
-    {
-        nExternalModificationStatistics->_taskForPid=self.taskForPid;
-        
-        nExternalModificationStatistics->_threadCreate=self.threadCreate;
-        
-        nExternalModificationStatistics->_threadSetState=self.threadSetState;
-    }
-    
-    return nExternalModificationStatistics;
+	IPSExternalModificationStatistics * nExternalModificationStatistics=[IPSExternalModificationStatistics allocWithZone:inZone];
+	
+	if (nExternalModificationStatistics!=nil)
+	{
+		nExternalModificationStatistics->_taskForPid=self.taskForPid;
+		
+		nExternalModificationStatistics->_threadCreate=self.threadCreate;
+		
+		nExternalModificationStatistics->_threadSetState=self.threadSetState;
+	}
+	
+	return nExternalModificationStatistics;
 }
 
 @end

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Stephane Sudre
+ Copyright (c) 2022-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,44 +48,41 @@
 
 - (id)obfuscateWithObfuscator:(IPSObfuscator *)inObfuscator
 {
-    IPSIncident * nIncident=[self copy];
-    
-    if (nIncident!=nil)
-    {
-        nIncident.header=[self.header obfuscateWithObfuscator:inObfuscator];
-        
-        nIncident.exceptionInformation=[self.exceptionInformation obfuscateWithObfuscator:inObfuscator];
-        
-        NSMutableIndexSet * tMutableIndexSet=[NSMutableIndexSet indexSet];
-        
-        nIncident.binaryImages=[self.binaryImages WB_arrayByMappingObjectsUsingBlock:^IPSImage *(IPSImage * bImage, NSUInteger bIndex) {
-            
-            BOOL tIsUserCode=bImage.isUserCode;
-            
-            if (tIsUserCode==YES)
-            {
-                [tMutableIndexSet addIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(bImage.loadAddress,bImage.size)]];
-                
-                [inObfuscator setSharedObject:@(YES) forKey:[NSString stringWithFormat:@"image_%lu",bIndex]];
-            }
-            
-            return [bImage obfuscateWithObfuscator:inObfuscator];
-        }];
-        
-        [inObfuscator setSharedObject:[tMutableIndexSet copy] forKey:@"userCodeIndexSet"];
-        
-        nIncident.diagnosticMessage=[self.diagnosticMessage obfuscateWithObfuscator:inObfuscator];
-        
-        nIncident.threads=[self.threads WB_arrayByMappingObjectsUsingBlock:^id(IPSThread * bThread, NSUInteger bIndex) {
-           
-            return [bThread obfuscateWithObfuscator:inObfuscator];
-            
-        }];
-        
-        nIncident.vmSummary=self.vmSummary;
-    }
-    
-    return nIncident;
+	IPSIncident * nIncident=[self copy];
+	
+	nIncident.header=[self.header obfuscateWithObfuscator:inObfuscator];
+	
+	nIncident.exceptionInformation=[self.exceptionInformation obfuscateWithObfuscator:inObfuscator];
+	
+	NSMutableIndexSet * tMutableIndexSet=[NSMutableIndexSet indexSet];
+	
+	nIncident.binaryImages=[self.binaryImages WB_arrayByMappingObjectsUsingBlock:^IPSImage *(IPSImage * bImage, NSUInteger bIndex) {
+		
+		BOOL tIsUserCode=bImage.isUserCode;
+		
+		if (tIsUserCode==YES)
+		{
+			[tMutableIndexSet addIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(bImage.loadAddress,bImage.size)]];
+			
+			[inObfuscator setSharedObject:@(YES) forKey:[NSString stringWithFormat:@"image_%lu",bIndex]];
+		}
+		
+		return [bImage obfuscateWithObfuscator:inObfuscator];
+	}];
+	
+	[inObfuscator setSharedObject:[tMutableIndexSet copy] forKey:@"userCodeIndexSet"];
+	
+	nIncident.diagnosticMessage=[self.diagnosticMessage obfuscateWithObfuscator:inObfuscator];
+	
+	nIncident.threads=[self.threads WB_arrayByMappingObjectsUsingBlock:^id(IPSThread * bThread, NSUInteger bIndex) {
+		
+		return [bThread obfuscateWithObfuscator:inObfuscator];
+		
+	}];
+	
+	nIncident.vmSummary=self.vmSummary;
+	
+	return nIncident;
 }
 
 @end

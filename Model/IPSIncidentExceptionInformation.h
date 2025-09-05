@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,18 +19,30 @@
 
 #import "IPSException.h"
 
+#import "IPSExceptionReason.h"
+
 #import "IPSTermination.h"
+
+#import "IPSThreadFrame.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface IPSIncidentExceptionInformation : NSObject <IPSObjectProtocol,NSCopying>
 
-    @property (readonly) NSUInteger faultingThread;
+	@property (readonly) NSUInteger faultingThread;
 
-    @property (readonly) IPSLegacyInfo * legacyInfo;
+	@property (readonly) IPSLegacyInfo * legacyInfo;
 
-    @property (readonly) IPSException * exception;
+	@property (readonly) IPSException * exception;
 
-    @property (readonly) IPSTermination * termination;
+	@property (nullable,readonly) IPSExceptionReason * exceptionReason;
 
-    @property (readonly,getter=isCorpse) BOOL corpse;
+	@property (nullable,readonly) NSArray<IPSThreadFrame *> * lastExceptionBacktrace;
+
+	@property (readonly) IPSTermination * termination;
+
+	@property (readonly,getter=isCorpse) BOOL corpse;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,64 +17,64 @@ NSString * const IPSThreadInstructionStateInstructionStreamKey=@"instructionStre
 
 @interface IPSThreadInstructionState ()
 
-    @property (readwrite) IPSThreadInstructionStream * instructionStream;
+	@property (readwrite) IPSThreadInstructionStream * instructionStream;
 
 @end
 
 
 @implementation IPSThreadInstructionState
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSDictionary * tDictionary=inRepresentation[IPSThreadInstructionStateInstructionStreamKey];
-        
-        _instructionStream=[[IPSThreadInstructionStream alloc] initWithRepresentation:tDictionary error:NULL];
-    }
-    
-    return self;
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+		
+		return nil;
+	}
+	
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+		
+		return nil;
+	}
+	
+	self=[super init];
+	
+	if (self!=nil)
+	{
+		NSDictionary * tDictionary=inRepresentation[IPSThreadInstructionStateInstructionStreamKey];
+		
+		_instructionStream=[[IPSThreadInstructionStream alloc] initWithRepresentation:tDictionary error:NULL];
+	}
+	
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    return @{
-             IPSThreadInstructionStateInstructionStreamKey:[self.instructionStream representation]
-             };
+	return @{
+			 IPSThreadInstructionStateInstructionStreamKey:[self.instructionStream representation]
+			 };
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    IPSThreadInstructionState * nThreadInstructionState=[IPSThreadInstructionState allocWithZone:inZone];
-    
-    if (nThreadInstructionState!=nil)
-    {
-        nThreadInstructionState->_instructionStream=[self.instructionStream copyWithZone:inZone];
-    }
-    
-    return nThreadInstructionState;
+	IPSThreadInstructionState * nThreadInstructionState=[IPSThreadInstructionState allocWithZone:inZone];
+	
+	if (nThreadInstructionState!=nil)
+	{
+		nThreadInstructionState->_instructionStream=[self.instructionStream copyWithZone:inZone];
+	}
+	
+	return nThreadInstructionState;
 }
 
 @end

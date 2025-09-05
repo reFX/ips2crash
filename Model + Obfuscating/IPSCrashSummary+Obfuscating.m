@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Stephane Sudre
+ Copyright (c) 2022-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,18 +27,15 @@
 
 - (id)obfuscateWithObfuscator:(IPSObfuscator *)inObfuscator
 {
-    IPSCrashSummary * nObfuscatedSummary=[[IPSCrashSummary alloc] initWithSummary:self];
-    
-    if (nObfuscatedSummary!=nil)
-    {
-        nObfuscatedSummary.applicationName=[inObfuscator obfuscatedStringWithString:self.applicationName family:IPSStringFamilyBinary];
-        
-        nObfuscatedSummary.applicationVersion=[self.applicationVersion copy];
-        
-        nObfuscatedSummary.applicationBuildVersion=[self.applicationBuildVersion copy];
-    }
-    
-    return nObfuscatedSummary;
+	IPSCrashSummary * nObfuscatedSummary=(IPSCrashSummary *)[[IPSCrashSummary alloc] initWithSummary:self];
+	
+	nObfuscatedSummary.applicationName=[inObfuscator obfuscatedStringWithString:self.applicationName family:IPSStringFamilyBinary];
+	
+	nObfuscatedSummary.applicationVersion=[self.applicationVersion copy];
+	
+	nObfuscatedSummary.applicationBuildVersion=[self.applicationBuildVersion copy];
+	
+	return nObfuscatedSummary;
 }
 
 @end

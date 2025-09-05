@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,180 +31,208 @@ NSString * const IPSThreadInstructionStateKey=@"instructionState";
 
 @interface IPSThread ()
 
-    @property (readwrite,copy) NSString * queue;     // can be nil
+	@property (nullable,readwrite,copy) NSString * queue;
 
-    @property (readwrite) NSUInteger ID;
+	@property (readwrite) NSUInteger ID;
 
-    @property (readwrite,copy) NSString * name;     // can be nil
+	@property (nullable,readwrite,copy) NSString * name;
 
-    @property (readwrite) NSArray<IPSThreadFrame *> * frames;
+	@property (readwrite) NSArray<IPSThreadFrame *> * frames;
 
-    @property (readwrite) BOOL triggered;
+	@property (readwrite) BOOL triggered;
 
-    @property (readwrite) IPSThreadState * threadState;  // can be nil
+	@property (nullable,readwrite) IPSThreadState * threadState;
 
-    @property (readwrite) IPSThreadInstructionState * instructionState;  // can be nil
+	@property (nullable,readwrite) IPSThreadInstructionState * instructionState;
 
 @end
 
 @implementation IPSThread
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSNumber * tNumber=inRepresentation[IPSThreadIDKey];
-        
-        if (tNumber!=nil)
-        {
-            IPSClassCheckNumberValueForKey(tNumber,IPSThreadIDKey);
-        
-            _ID=[tNumber unsignedIntegerValue];
-        }
-        
-        NSString * tString=inRepresentation[IPSThreadNameKey];
-        
-        if (tString!=nil)
-        {
-            IPSClassCheckStringValueForKey(tString,IPSThreadNameKey);
-            
-            _name=[tString copy];
-        }
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+		
+		return nil;
+	}
+	
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+		
+		return nil;
+	}
+	
+	self=[super init];
+	
+	if (self!=nil)
+	{
+		NSNumber * tNumber=inRepresentation[IPSThreadIDKey];
+		
+		if (tNumber!=nil)
+		{
+			IPSClassCheckNumberValueForKey(tNumber,IPSThreadIDKey);
+		
+			_ID=[tNumber unsignedIntegerValue];
+		}
+		
+		NSString * tString=inRepresentation[IPSThreadNameKey];
+		
+		if (tString!=nil)
+		{
+			IPSClassCheckStringValueForKey(tString,IPSThreadNameKey);
+			
+			_name=[tString copy];
+		}
 
-        tString=inRepresentation[IPSThreadQueueKey];
-        
-        if (tString!=nil)
-        {
-            IPSClassCheckStringValueForKey(tString,IPSThreadQueueKey);
-            
-            _queue=[tString copy];
-        }
-        
-        NSArray * tArray=inRepresentation[IPSThreadFramesKey];
-        
-        if (tArray!=nil)
-        {
-            if ([tArray isKindOfClass:[NSArray class]]==NO)
-            {
-                if (outError!=NULL)
-                    *outError=[NSError errorWithDomain:IPSErrorDomain
-                                                  code:IPSRepresentationInvalidTypeOfValueError
-                                              userInfo:@{IPSKeyPathErrorKey:(IPSThreadFramesKey)}];
-                
-                return nil;
-            }
-            
-            _frames=[tArray WB_arrayByMappingObjectsUsingBlock:^IPSThreadFrame *(NSDictionary * bBThreadFrameRepresentation, NSUInteger bIndex) {
-                
-                IPSThreadFrame * tThreadFrame=[[IPSThreadFrame alloc] initWithRepresentation:bBThreadFrameRepresentation error:NULL];
-                
-                return tThreadFrame;
-            }];
-        }
-    
-        tNumber=inRepresentation[IPSThreadTriggeredKey];
-        
-        if (tNumber!=nil)
-        {
-            IPSClassCheckNumberValueForKey(tNumber,IPSThreadTriggeredKey);
-        
-            _triggered=[tNumber boolValue];
-        }
-        
-        NSDictionary * tDictionary=inRepresentation[IPSThreadThreadStateKey];
-        
-        if (tDictionary!=nil)
-        {
-            _threadState=[[IPSThreadState alloc] initWithRepresentation:tDictionary error:outError];
-        }
-        
-        tDictionary=inRepresentation[IPSThreadInstructionStateKey];
-        
-        if (tDictionary!=nil)
-        {
-            _instructionState=[[IPSThreadInstructionState alloc] initWithRepresentation:tDictionary error:outError];
-        }
-    }
-    
-    return self;
+		tString=inRepresentation[IPSThreadQueueKey];
+		
+		if (tString!=nil)
+		{
+			IPSClassCheckStringValueForKey(tString,IPSThreadQueueKey);
+			
+			_queue=[tString copy];
+		}
+		
+		NSArray * tArray=inRepresentation[IPSThreadFramesKey];
+		
+		if (tArray!=nil)
+		{
+			if ([tArray isKindOfClass:NSArray.class]==NO)
+			{
+				if (outError!=NULL)
+					*outError=[NSError errorWithDomain:IPSErrorDomain
+												  code:IPSRepresentationInvalidTypeOfValueError
+											  userInfo:@{IPSKeyPathErrorKey:(IPSThreadFramesKey)}];
+				
+				return nil;
+			}
+			
+			__block NSError *tFramesError = nil;
+			
+			_frames=[tArray WB_arrayByMappingObjectsUsingBlock:^IPSThreadFrame *(NSDictionary * bBThreadFrameRepresentation, NSUInteger bIndex) {
+				
+				NSError * tError;
+				IPSThreadFrame * tThreadFrame=[[IPSThreadFrame alloc] initWithRepresentation:bBThreadFrameRepresentation error:&tError];
+				
+				if (tThreadFrame==nil)
+				{
+					NSString * tPathError=IPSThreadFramesKey;
+					
+					if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
+					{
+						tPathError=[tPathError stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",bIndex]];
+						tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
+					}
+					
+					tFramesError=[NSError errorWithDomain:IPSErrorDomain
+													 code:tError.code
+												 userInfo:@{IPSKeyPathErrorKey:tPathError}];
+					
+					return nil;
+				}
+				
+				return tThreadFrame;
+			}];
+			
+			if (_frames==nil)
+			{
+				if (outError!=NULL)
+					*outError=tFramesError;
+				
+				return nil;
+			}
+		}
+	
+		tNumber=inRepresentation[IPSThreadTriggeredKey];
+		
+		if (tNumber!=nil)
+		{
+			IPSClassCheckNumberValueForKey(tNumber,IPSThreadTriggeredKey);
+		
+			_triggered=[tNumber boolValue];
+		}
+		
+		NSDictionary * tDictionary=inRepresentation[IPSThreadThreadStateKey];
+		
+		if (tDictionary!=nil)
+		{
+			_threadState=[[IPSThreadState alloc] initWithRepresentation:tDictionary error:outError];
+		}
+		
+		tDictionary=inRepresentation[IPSThreadInstructionStateKey];
+		
+		if (tDictionary!=nil)
+		{
+			_instructionState=[[IPSThreadInstructionState alloc] initWithRepresentation:tDictionary error:outError];
+		}
+	}
+	
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    NSMutableDictionary * tMutableDictionary=[NSMutableDictionary dictionary];
-    
-    tMutableDictionary[IPSThreadIDKey]=@(self.ID);
-    
-    if (self.name!=nil)
-        tMutableDictionary[IPSThreadNameKey]=self.name;
-    
-    if (self.queue!=nil)
-        tMutableDictionary[IPSThreadQueueKey]=self.queue;
-    
-    if (self.frames.count>0)
-    {
-        tMutableDictionary[IPSThreadFramesKey]=[self.frames WB_arrayByMappingObjectsUsingBlock:^NSDictionary *(IPSThreadFrame * bFrame, NSUInteger bIndex) {
-            
-            return [bFrame representation];
-        }];
-    }
-    
-    if (self.triggered==YES)
-        tMutableDictionary[IPSThreadTriggeredKey]=@(YES);
-    
-    if (self.threadState!=nil)
-        tMutableDictionary[IPSThreadThreadStateKey]=[self.threadState representation];
-    
-    return @{};
+	NSMutableDictionary * tMutableDictionary=[NSMutableDictionary dictionary];
+	
+	tMutableDictionary[IPSThreadIDKey]=@(self.ID);
+	
+	if (self.name!=nil)
+		tMutableDictionary[IPSThreadNameKey]=self.name;
+	
+	if (self.queue!=nil)
+		tMutableDictionary[IPSThreadQueueKey]=self.queue;
+	
+	if (self.frames.count>0)
+	{
+		tMutableDictionary[IPSThreadFramesKey]=[self.frames WB_arrayByMappingObjectsUsingBlock:^NSDictionary *(IPSThreadFrame * bFrame, NSUInteger bIndex) {
+			
+			return [bFrame representation];
+		}];
+	}
+	
+	if (self.triggered==YES)
+		tMutableDictionary[IPSThreadTriggeredKey]=@(YES);
+	
+	if (self.threadState!=nil)
+		tMutableDictionary[IPSThreadThreadStateKey]=[self.threadState representation];
+	
+	return @{};
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    IPSThread * nThread=[IPSThread allocWithZone:inZone];
-    
-    if (nThread!=nil)
-    {
-        nThread->_queue=[self.queue copyWithZone:inZone];
-        
-        nThread->_ID=self.ID;
-        
-        nThread->_name=[self.name copyWithZone:inZone];
-        
-        nThread->_frames=[self.frames WB_arrayByMappingObjectsUsingBlock:^IPSThreadFrame *(IPSThreadFrame * bThreadFrame, NSUInteger bIndex) {
-            
-            return [bThreadFrame copyWithZone:inZone];
-        }];
-        
-        nThread->_triggered=self.triggered;
-        
-        nThread.threadState=[self.threadState copyWithZone:inZone];
-        
-        nThread.instructionState=[self.instructionState copyWithZone:inZone];
-    }
-    
-    return nThread;
+	IPSThread * nThread=[IPSThread allocWithZone:inZone];
+	
+	if (nThread!=nil)
+	{
+		nThread->_queue=[self.queue copyWithZone:inZone];
+		
+		nThread->_ID=self.ID;
+		
+		nThread->_name=[self.name copyWithZone:inZone];
+		
+		nThread->_frames=[self.frames WB_arrayByMappingObjectsUsingBlock:^IPSThreadFrame *(IPSThreadFrame * bThreadFrame, NSUInteger bIndex) {
+			
+			return [bThreadFrame copyWithZone:inZone];
+		}];
+		
+		nThread->_triggered=self.triggered;
+		
+		nThread.threadState=[self.threadState copyWithZone:inZone];
+		
+		nThread.instructionState=[self.instructionState copyWithZone:inZone];
+	}
+	
+	return nThread;
 }
 
 @end

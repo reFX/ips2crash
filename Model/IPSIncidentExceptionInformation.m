@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,178 +20,251 @@ NSString * const IPSIncidentExceptionInformationLegacyInfoKey=@"legacyInfo";
 
 NSString * const IPSIncidentExceptionInformationExceptionKey=@"exception";
 
+NSString * const IPSIncidentExceptionInformationExceptionReasonKey=@"exceptionReason";
+
+NSString * const IPSIncidentExceptionInformationLastExceptionBacktraceKey=@"lastExceptionBacktrace";
+
 NSString * const IPSIncidentExceptionInformationTerminationKey=@"termination";
 
 NSString * const IPSIncidentExceptionInformationCorpseKey=@"isCorpse";
 
 NSString * const IPSIncidentExceptionInformationCorpseOldKey=@"is_corpse";
 
+
 @interface IPSIncidentExceptionInformation ()
 
-    @property (readwrite) NSUInteger faultingThread;
+	@property (readwrite) NSUInteger faultingThread;
 
-    @property (readwrite) IPSLegacyInfo * legacyInfo;
+	@property (readwrite) IPSLegacyInfo * legacyInfo;
 
-    @property (readwrite) IPSException * exception;
+	@property (readwrite) IPSException * exception;
 
-    @property (readwrite) IPSTermination * termination;
+	@property (readwrite, nullable) IPSExceptionReason * exceptionReason;
 
-    @property (readwrite,getter=isCorpse) BOOL corpse;
+	@property (readwrite, nullable) NSArray<IPSThreadFrame *> * lastExceptionBacktrace;
+
+	@property (readwrite) IPSTermination * termination;
+
+	@property (readwrite,getter=isCorpse) BOOL corpse;
 
 @end
 
 @implementation IPSIncidentExceptionInformation
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSError * tError=nil;
-        NSNumber * tNumber=inRepresentation[IPSIncidentExceptionInformationFaultingThreadKey];
-        
-        if (tNumber==nil)
-        {
-            // Support for older .ips format to add
-        }
-        else
-        {
-            IPSClassCheckNumberValueForKey(tNumber,IPSIncidentExceptionInformationFaultingThreadKey);
-        }
-        
-        _faultingThread=[tNumber unsignedIntegerValue];
-        
-       
-        NSDictionary * tDictionary=inRepresentation[IPSIncidentExceptionInformationExceptionKey];
-        
-        _exception=[[IPSException alloc] initWithRepresentation:tDictionary error:&tError];
-        
-        if (_exception==nil)
-        {
-            NSString * tPathError=IPSIncidentExceptionInformationExceptionKey;
-            
-            if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
-                tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
-            
-            if (outError!=NULL)
-                *outError=[NSError errorWithDomain:IPSErrorDomain
-                                              code:tError.code
-                                          userInfo:@{IPSKeyPathErrorKey:tPathError}];
-            
-            return nil;
-        }
-        
-        tError=nil;
-        tDictionary=inRepresentation[IPSIncidentExceptionInformationTerminationKey];
-        
-        if (tDictionary!=nil)
-        {
-            _termination=[[IPSTermination alloc] initWithRepresentation:tDictionary error:&tError];
-        
-            if (_termination==nil)
-            {
-                NSString * tPathError=IPSIncidentExceptionInformationTerminationKey;
-                
-                if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
-                    tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
-                
-                if (outError!=NULL)
-                    *outError=[NSError errorWithDomain:IPSErrorDomain
-                                                  code:tError.code
-                                              userInfo:@{IPSKeyPathErrorKey:tPathError}];
-                
-                return nil;
-            }
-        }
-        
-        tDictionary=inRepresentation[IPSIncidentExceptionInformationLegacyInfoKey];
-        
-        tError=nil;
-        
-        if (tDictionary!=nil)
-        {
-            _legacyInfo=[[IPSLegacyInfo alloc] initWithRepresentation:tDictionary error:&tError];
-        
-            if (_legacyInfo==nil)
-            {
-                NSString * tPathError=IPSIncidentExceptionInformationLegacyInfoKey;
-                
-                if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
-                    tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
-                
-                if (outError!=NULL)
-                    *outError=[NSError errorWithDomain:IPSErrorDomain
-                                                  code:tError.code
-                                              userInfo:@{IPSKeyPathErrorKey:tPathError}];
-                
-                return nil;
-            }
-        }
-        
-        tNumber=inRepresentation[IPSIncidentExceptionInformationCorpseOldKey];
-        
-        if (tNumber!=nil)
-        {
-            IPSClassCheckNumberValueForKey(tNumber,IPSIncidentExceptionInformationCorpseOldKey);
-        }
-        else
-        {
-            tNumber=inRepresentation[IPSIncidentExceptionInformationCorpseKey];
-            
-            if (tNumber!=nil)
-                IPSClassCheckNumberValueForKey(tNumber,IPSIncidentExceptionInformationCorpseKey);
-        }
-        
-        _corpse=[tNumber boolValue];
-    }
-    
-    return self;
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+		
+		return nil;
+	}
+	
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+		
+		return nil;
+	}
+	
+	self=[super init];
+	
+	if (self!=nil)
+	{
+		NSError * tError=nil;
+		NSNumber * tNumber=inRepresentation[IPSIncidentExceptionInformationFaultingThreadKey];
+		
+		if (tNumber==nil)
+		{
+			// Support for older .ips format to add
+		}
+		else
+		{
+			IPSClassCheckNumberValueForKey(tNumber,IPSIncidentExceptionInformationFaultingThreadKey);
+		}
+		
+		_faultingThread=[tNumber unsignedIntegerValue];
+		
+	   
+		NSDictionary * tDictionary=inRepresentation[IPSIncidentExceptionInformationExceptionKey];
+		
+		_exception=[[IPSException alloc] initWithRepresentation:tDictionary error:&tError];
+		
+		if (_exception==nil)
+		{
+			NSString * tPathError=IPSIncidentExceptionInformationExceptionKey;
+			
+			if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
+				tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
+			
+			if (outError!=NULL)
+				*outError=[NSError errorWithDomain:IPSErrorDomain
+											  code:tError.code
+										  userInfo:@{IPSKeyPathErrorKey:tPathError}];
+			
+			return nil;
+		}
+		
+		tError=nil;
+		tDictionary=inRepresentation[IPSIncidentExceptionInformationExceptionReasonKey];
+		
+		if (tDictionary!=nil)
+		{
+			_exceptionReason=[[IPSExceptionReason alloc] initWithRepresentation:tDictionary error:&tError];
+			
+			if (_exceptionReason==nil)
+			{
+				NSString * tPathError=IPSIncidentExceptionInformationExceptionReasonKey;
+				
+				if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
+					tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
+				
+				if (outError!=NULL)
+					*outError=[NSError errorWithDomain:IPSErrorDomain
+												  code:tError.code
+											  userInfo:@{IPSKeyPathErrorKey:tPathError}];
+				
+				return nil;
+			}
+		}
+		
+		NSArray<NSDictionary *> * tArray=inRepresentation[IPSIncidentExceptionInformationLastExceptionBacktraceKey];
+		
+		if ([tArray isKindOfClass:NSArray.class]==YES)
+		{
+			NSMutableArray<IPSThreadFrame *> *tBacktrace=[NSMutableArray array];
+			NSUInteger tFrameIndex=0;
+			
+			for(NSDictionary *tFrameRepresentation in tArray)
+			{
+				IPSThreadFrame * tFrame=[[IPSThreadFrame alloc] initWithRepresentation:tFrameRepresentation error:&tError];
+				
+				if (tFrame==nil)
+				{
+					NSString * tPathError=IPSIncidentExceptionInformationLastExceptionBacktraceKey;
+					
+					if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
+					{
+						tPathError=[tPathError stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",tFrameIndex]];
+						tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
+					}
+					
+					if (outError!=NULL)
+						*outError=[NSError errorWithDomain:IPSErrorDomain
+													  code:tError.code
+												  userInfo:@{IPSKeyPathErrorKey:tPathError}];
+					
+					return nil;
+				}
+				
+				[tBacktrace addObject:tFrame];
+				
+				tFrameIndex++;
+			}
+			
+			_lastExceptionBacktrace=[tBacktrace copy];
+		}
+		
+		tError=nil;
+		tDictionary=inRepresentation[IPSIncidentExceptionInformationTerminationKey];
+		
+		if (tDictionary!=nil)
+		{
+			_termination=[[IPSTermination alloc] initWithRepresentation:tDictionary error:&tError];
+		
+			if (_termination==nil)
+			{
+				NSString * tPathError=IPSIncidentExceptionInformationTerminationKey;
+				
+				if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
+					tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
+				
+				if (outError!=NULL)
+					*outError=[NSError errorWithDomain:IPSErrorDomain
+												  code:tError.code
+											  userInfo:@{IPSKeyPathErrorKey:tPathError}];
+				
+				return nil;
+			}
+		}
+		
+		tDictionary=inRepresentation[IPSIncidentExceptionInformationLegacyInfoKey];
+		
+		tError=nil;
+		
+		if (tDictionary!=nil)
+		{
+			_legacyInfo=[[IPSLegacyInfo alloc] initWithRepresentation:tDictionary error:&tError];
+		
+			if (_legacyInfo==nil)
+			{
+				NSString * tPathError=IPSIncidentExceptionInformationLegacyInfoKey;
+				
+				if (tError.userInfo[IPSKeyPathErrorKey]!=nil)
+					tPathError=[tPathError stringByAppendingPathComponent:tError.userInfo[IPSKeyPathErrorKey]];
+				
+				if (outError!=NULL)
+					*outError=[NSError errorWithDomain:IPSErrorDomain
+												  code:tError.code
+											  userInfo:@{IPSKeyPathErrorKey:tPathError}];
+				
+				return nil;
+			}
+		}
+		
+		tNumber=inRepresentation[IPSIncidentExceptionInformationCorpseOldKey];
+		
+		if (tNumber!=nil)
+		{
+			IPSClassCheckNumberValueForKey(tNumber,IPSIncidentExceptionInformationCorpseOldKey);
+		}
+		else
+		{
+			tNumber=inRepresentation[IPSIncidentExceptionInformationCorpseKey];
+			
+			if (tNumber!=nil)
+				IPSClassCheckNumberValueForKey(tNumber,IPSIncidentExceptionInformationCorpseKey);
+		}
+		
+		_corpse=[tNumber boolValue];
+	}
+	
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    return @{};
+	return @{};
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    IPSIncidentExceptionInformation * nIncidentExceptionInformation=[IPSIncidentExceptionInformation allocWithZone:inZone];
-    
-    if (nIncidentExceptionInformation!=nil)
-    {
-        nIncidentExceptionInformation->_faultingThread=self.faultingThread;
-        
-        nIncidentExceptionInformation->_legacyInfo=[self.legacyInfo copyWithZone:inZone];
-        
-        nIncidentExceptionInformation->_exception=[self.exception copyWithZone:inZone];
-        
-        nIncidentExceptionInformation->_termination=[self.termination copyWithZone:inZone];
-        
-        nIncidentExceptionInformation->_corpse=self.isCorpse;
-    }
-    
-    return nIncidentExceptionInformation;
+	IPSIncidentExceptionInformation * nIncidentExceptionInformation=[IPSIncidentExceptionInformation allocWithZone:inZone];
+	
+	if (nIncidentExceptionInformation!=nil)
+	{
+		nIncidentExceptionInformation->_faultingThread=self.faultingThread;
+		
+		nIncidentExceptionInformation->_legacyInfo=[self.legacyInfo copyWithZone:inZone];
+		
+		nIncidentExceptionInformation->_exception=[self.exception copyWithZone:inZone];
+		
+		nIncidentExceptionInformation->_exceptionReason=[self.exceptionReason copyWithZone:inZone];
+		
+		nIncidentExceptionInformation->_lastExceptionBacktrace=[self.lastExceptionBacktrace copyWithZone:inZone];
+		
+		nIncidentExceptionInformation->_termination=[self.termination copyWithZone:inZone];
+		
+		nIncidentExceptionInformation->_corpse=self.isCorpse;
+	}
+	
+	return nIncidentExceptionInformation;
 }
 
 @end

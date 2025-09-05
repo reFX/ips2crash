@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephane Sudre
+ Copyright (c) 2021-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,107 +25,107 @@ NSString * const IPSReportSummaryTimestampKey=@"timestamp";
 
 @interface IPSSummary ()
 
-    @property (readwrite) IPSBugType bugType;
+	@property (readwrite) IPSBugType bugType;
 
-    @property (readwrite) NSUUID * incidentID;
+	@property (readwrite) NSUUID * incidentID;
 
-    @property (readwrite,copy) NSString * operatingSystemVersion;
+	@property (readwrite,copy) NSString * operatingSystemVersion;
 
-    @property (readwrite) NSDate * timeStamp;
+	@property (readwrite) NSDate * timeStamp;
 
 @end
 
 
 @implementation IPSSummary
 
-- (instancetype)initWithSummary:(IPSSummary *)inSummary
+- (nullable instancetype)initWithSummary:(IPSSummary *)inSummary
 {
-    if ([inSummary isKindOfClass:[IPSSummary class]]==NO)
-        return nil;
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        _bugType=inSummary.bugType;
-        
-        _incidentID=inSummary.incidentID;
-        
-        _operatingSystemVersion=[inSummary.operatingSystemVersion copy];
-        
-        _timeStamp=inSummary.timeStamp;
-    }
-    
-    return self;
+	if ([inSummary isKindOfClass:IPSSummary.class]==NO)
+		return nil;
+
+	self=[super init];
+
+	if (self!=nil)
+	{
+		_bugType=inSummary.bugType;
+
+		_incidentID=inSummary.incidentID;
+
+		_operatingSystemVersion=[inSummary.operatingSystemVersion copy];
+
+		_timeStamp=inSummary.timeStamp;
+	}
+
+	return self;
 }
 
-- (instancetype)initWithRepresentation:(NSDictionary *)inRepresentation error:(out NSError **)outError
+- (nullable instancetype)initWithRepresentation:(nullable NSDictionary *)inRepresentation error:(out NSError **)outError
 {
-    if (inRepresentation==nil)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
-        
-        return nil;
-    }
-    
-    if ([inRepresentation isKindOfClass:[NSDictionary class]]==NO)
-    {
-        if (outError!=NULL)
-            *outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
-        
-        return nil;
-    }
-    
-    self=[super init];
-    
-    if (self!=nil)
-    {
-        NSString * tString=inRepresentation[IPSReportSummaryBugTypeKey];
-        
-         IPSFullCheckStringValueForKey(tString,IPSReportSummaryBugTypeKey);
-        
-        _bugType=[tString integerValue];
-        
-        tString=inRepresentation[IPSReportSummaryIncidentIDKey];
-        
-        IPSFullCheckStringValueForKey(tString,IPSReportSummaryIncidentIDKey);
-        
-        _incidentID=[[NSUUID alloc] initWithUUIDString:tString];
-        
-        tString=inRepresentation[IPSReportSummaryOperatingSystemVersionKey];
-        
-        IPSFullCheckStringValueForKey(tString,IPSReportSummaryOperatingSystemVersionKey);
-        
-        _operatingSystemVersion=[tString copy];
-        
-        tString=inRepresentation[IPSReportSummaryTimestampKey];
-        
-        IPSFullCheckStringValueForKey(tString,IPSReportSummaryTimestampKey);
-        
-        _timeStamp=[[IPSDateFormatter sharedFormatter] dateFromString:tString];
-    }
-    
-    return self;
+	if (inRepresentation==nil)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationNilRepresentationError userInfo:nil];
+
+		return nil;
+	}
+
+	if ([inRepresentation isKindOfClass:NSDictionary.class]==NO)
+	{
+		if (outError!=NULL)
+			*outError=[NSError errorWithDomain:IPSErrorDomain code:IPSRepresentationInvalidTypeOfValueError userInfo:nil];
+
+		return nil;
+	}
+
+	self=[super init];
+
+	if (self!=nil)
+	{
+		NSString * tString=inRepresentation[IPSReportSummaryBugTypeKey];
+
+		 IPSFullCheckStringValueForKey(tString,IPSReportSummaryBugTypeKey);
+
+		_bugType=[tString integerValue];
+		
+		tString=inRepresentation[IPSReportSummaryIncidentIDKey];
+
+		IPSFullCheckStringValueForKey(tString,IPSReportSummaryIncidentIDKey);
+
+		_incidentID=[[NSUUID alloc] initWithUUIDString:tString];
+
+		tString=inRepresentation[IPSReportSummaryOperatingSystemVersionKey];
+
+		IPSFullCheckStringValueForKey(tString,IPSReportSummaryOperatingSystemVersionKey);
+
+		_operatingSystemVersion=[tString copy];
+
+		tString=inRepresentation[IPSReportSummaryTimestampKey];
+
+		IPSFullCheckStringValueForKey(tString,IPSReportSummaryTimestampKey);
+
+		_timeStamp=[[IPSDateFormatter sharedFormatter] dateFromString:tString];
+	}
+
+	return self;
 }
 
 #pragma mark -
 
 - (NSDictionary *)representation
 {
-    return @{
-             IPSReportSummaryBugTypeKey: [NSString stringWithFormat:@"%ld",self.bugType],
-             IPSReportSummaryIncidentIDKey:self.incidentID,
-             IPSReportSummaryOperatingSystemVersionKey:self.operatingSystemVersion,
-             IPSReportSummaryTimestampKey:[[IPSDateFormatter sharedFormatter] stringFromDate:self.timeStamp]
-             };
+	return @{
+			 IPSReportSummaryBugTypeKey: [NSString stringWithFormat:@"%ld",self.bugType],
+			 IPSReportSummaryIncidentIDKey:self.incidentID,
+			 IPSReportSummaryOperatingSystemVersionKey:self.operatingSystemVersion,
+			 IPSReportSummaryTimestampKey:[[IPSDateFormatter sharedFormatter] stringFromDate:self.timeStamp]
+			 };
 }
 
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)inZone
 {
-    return [[IPSSummary allocWithZone:inZone] initWithSummary:self];
+	return [[IPSSummary allocWithZone:inZone] initWithSummary:self];
 }
 
 @end

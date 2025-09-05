@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Stephane Sudre
+ Copyright (c) 2022-2025, Stephane Sudre
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,13 +13,16 @@
 
 #import "IPSSummary.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface IPSCrashSummary : IPSSummary
 
-    @property (readonly,copy) NSString * applicationName;
+	@property (readonly,copy) NSString * applicationName;
 
-    @property (readonly,copy) NSString * applicationVersion;
+	@property (readonly,copy) NSString * applicationVersion;
 
-    @property (readonly,copy) NSString * applicationBuildVersion;
+	@property (readonly,copy) NSString * applicationBuildVersion;
 
 @end
 
+NS_ASSUME_NONNULL_END

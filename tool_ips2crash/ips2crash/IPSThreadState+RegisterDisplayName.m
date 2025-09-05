@@ -15,24 +15,24 @@
 
 @implementation IPSThreadState (RegisterDisplayName)
 
-+ (NSString *)displayNameForRegisterName:(NSString *)inName
++ (nullable NSString *)displayNameForRegisterName:(nullable NSString *)inName
 {
-    if (inName==nil)
-        return nil;
-    
-    static NSDictionary * sTranslationRegistry=nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        sTranslationRegistry=@{
-                               @"rflags":@"rfl"
-                               };
-        
-    });
-    
-    NSString * tTranslatedName=sTranslationRegistry[inName];
-    
-    return (tTranslatedName!=nil) ? tTranslatedName : inName;
+	if (inName==nil)
+		return nil;
+	
+	static NSDictionary * sTranslationRegistry=nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		
+		sTranslationRegistry=@{
+							   @"rflags":@"rfl"
+							   };
+		
+	});
+	
+	NSString * tTranslatedName=sTranslationRegistry[inName];
+	
+	return (tTranslatedName!=nil) ? tTranslatedName : inName;
 }
 
 @end
